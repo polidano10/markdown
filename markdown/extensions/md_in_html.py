@@ -178,7 +178,6 @@ class HTMLExtractorExtra(HTMLExtractor):
                     self.handle_data(text)
 
     def handle_startendtag(self, tag, attrs):
-        print(tag)
         if tag in self.empty_tags:
             attrs = {key: value if value is not None else key for key, value in attrs}
             if "markdown" in attrs:
@@ -257,6 +256,7 @@ class MarkdownInHtmlProcessor(BlockProcessor):
         """
 
         md_attr = element.attrib.pop('markdown', 'off')
+        print(element)
 
         if md_attr == 'block':
             # Parse content as block level
