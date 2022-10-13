@@ -89,7 +89,8 @@ class HTMLExtractorExtra(HTMLExtractor):
     def handle_starttag(self, tag, attrs):
         # Handle tags that should always be empty and do not specify a closing tag
 
-        print(tag)
+        if tag == "iframe":
+            attrs["loading"] = "lazy"
 
         if tag in self.empty_tags and (self.at_line_start() or self.intail):
             attrs = {key: value if value is not None else key for key, value in attrs}
