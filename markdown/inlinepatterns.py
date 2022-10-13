@@ -763,6 +763,7 @@ class ImageInlineProcessor(LinkInlineProcessor):
         el = etree.Element("img")
 
         el.set("src", src)
+        el.set("loading", "lazy")
 
         if title is not None:
             el.set("title", title)
@@ -835,6 +836,7 @@ class ImageReferenceInlineProcessor(ReferenceInlineProcessor):
     def makeTag(self, href, title, text):
         el = etree.Element("img")
         el.set("src", href)
+        el.set("loading", "lazy")
         if title:
             el.set("title", title)
         el.set("alt", self.unescape(text))
