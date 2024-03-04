@@ -1,20 +1,25 @@
-"""
-Fenced Code Extension for Python Markdown
-=========================================
+# Fenced Code Extension for Python Markdown
+# =========================================
 
+# This extension adds Fenced Code Blocks to Python-Markdown.
+
+# See https://Python-Markdown.github.io/extensions/fenced_code_blocks
+# for documentation.
+
+# Original code Copyright 2007-2008 [Waylan Limberg](http://achinghead.com/).
+
+# All changes Copyright 2008-2014 The Python Markdown Project
+
+# License: [BSD](https://opensource.org/licenses/bsd-license.php)
+
+"""
 This extension adds Fenced Code Blocks to Python-Markdown.
 
-See <https://Python-Markdown.github.io/extensions/fenced_code_blocks>
-for documentation.
-
-Original code Copyright 2007-2008 [Waylan Limberg](http://achinghead.com/).
-
-
-All changes Copyright 2008-2014 The Python Markdown Project
-
-License: [BSD](https://opensource.org/licenses/bsd-license.php)
+See the [documentation](https://Python-Markdown.github.io/extensions/fenced_code_blocks)
+for details.
 """
 
+from __future__ import annotations
 
 from textwrap import dedent
 from . import Extension
@@ -24,6 +29,10 @@ from .attr_list import get_attrs, AttrListExtension
 from ..util import parseBoolValue
 from ..serializers import _escape_attrib_html
 import re
+from typing import TYPE_CHECKING, Any, Iterable
+
+if TYPE_CHECKING:  # pragma: no cover
+    from markdown import Markdown
 
 
 class FencedCodeExtension(Extension):
@@ -31,6 +40,7 @@ class FencedCodeExtension(Extension):
         self.config = {
             'lang_prefix': ['language-', 'Prefix prepended to the language. Default: "language-"']
         }
+        """ Default configuration options. """
         super().__init__(**kwargs)
 
     def extendMarkdown(self, md):
@@ -41,6 +51,8 @@ class FencedCodeExtension(Extension):
 
 
 class FencedBlockPreprocessor(Preprocessor):
+    """ Find and extract fenced code blocks. """
+
     FENCED_BLOCK_RE = re.compile(
         dedent(r'''
             (?P<fence>^(?:~{3,}|`{3,}))[ ]*                          # opening fence
@@ -54,11 +66,11 @@ class FencedBlockPreprocessor(Preprocessor):
         re.MULTILINE | re.DOTALL | re.VERBOSE
     )
 
-    def __init__(self, md, config):
+    def __init__(self, md: Markdown, config: dict[str, Any]):
         super().__init__(md)
         self.config = config
         self.checked_for_deps = False
-        self.codehilite_conf = {}
+        self.codehilite_conf: dict[str, Any] = {}
         self.use_attr_list = False
         # List of options to convert to boolean values
         self.bool_options = [
@@ -68,7 +80,7 @@ class FencedBlockPreprocessor(Preprocessor):
             'use_pygments'
         ]
 
-    def run(self, lines):
+    def run(self, lines: list[str]) -> list[str]:
         """ Match and store Fenced Code Blocks in the `HtmlStash`. """
 
         # Check for dependent extensions
@@ -143,8 +155,8 @@ class FencedBlockPreprocessor(Preprocessor):
                 break
         return text.split("\n")
 
-    def handle_attrs(self, attrs):
-        """ Return tuple: (id, [list, of, classes], {configs}) """
+    def handle_attrs(self, attrs: Iterable[tuple[str, str]]) -> tuple[str, list[str], dict[str, Any]]:
+        """ Return tuple: `(id, [list, of, classes], {configs})` """
         id = ''
         classes = []
         configs = {}
@@ -161,7 +173,7 @@ class FencedBlockPreprocessor(Preprocessor):
                 configs[k] = v
         return id, classes, configs
 
-    def _escape(self, txt):
+    def _escape(self, txt: str) -> str:
         """ basic html escaping """
         txt = txt.replace('&', '&amp;')
         txt = txt.replace('<', '&lt;')

@@ -151,6 +151,9 @@ The following options are provided to configure the output:
 * **`title`**:
     Title to insert in the Table of Contents' `<div>`. Defaults to `None`.
 
+* **`title_class`**:
+    CSS class used for the title contained in the Table of Contents. Defaults to `toctitle`.
+
 * **`toc_class`**:
     CSS class(es) used for the `<div>` containing the Table of Contents. Defaults to `toc`.
 
@@ -173,6 +176,15 @@ The following options are provided to configure the output:
 
 * **`permalink_title`**:
     Title attribute of the permanent link. Defaults to `Permanent link`.
+
+* **`permalink_leading`**:
+    Set to `True` if the extension should generate leading permanent links.
+    Default is `False`.
+
+    Leading permanent links are placed at the start of the header tag,
+    before any header content. The default `permalink` behavior (when
+    `permalink_leading` is unset or set to `False`) creates trailing
+    permanent links, which are placed at the end of the header content.
 
 * **`baselevel`**:
     Base level for headers. Defaults to `1`.

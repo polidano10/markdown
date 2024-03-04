@@ -18,15 +18,21 @@ blockquotes
 boolean
 CamelCase
 Chodarev
+changelog
+changelogs
 CLI
+cPython
 CodeHilite
 codehilite
 Cogumbreiro
+CommonMark
 convertFile
 CSS
+customizable
 dedent
 deliminators
 deregister
+detabbed
 Dmitry
 docdata
 ElementTree
@@ -48,6 +54,7 @@ implementers
 InlineProcessor
 Jiryu
 JSON
+keepachangelog
 Kjell
 Krech
 kwargs
@@ -63,6 +70,7 @@ md
 merchantability
 metadata
 MkDocs
+mkdocstrings
 multi
 MultiMarkdown
 munge
@@ -96,6 +104,7 @@ refactor
 refactored
 refactors
 registerExtension
+resettable
 richeland
 RSS
 rST
@@ -120,6 +129,7 @@ stdout
 Stelios
 Stienstra
 subclasses
+submodules
 SuperFences
 svn
 Swartz

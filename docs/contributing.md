@@ -56,9 +56,16 @@ library. Keeping new feature requests implemented as third party extensions
 allows us to keep the maintenance overhead of Python-Markdown to a minimum, so
 that the focus can be on continued stability, bug fixes, and documentation.
 
-Closing an issue does not necessarily mean the end of a discussion. If you
-believe your issue has been closed incorrectly, explain why and we'll consider
-if it needs to be reopened.
+If you intend to submit a fix for your bug or provide an implementation of your
+feature request, it is not necessary to first open an issue. You can report a
+bug or make a feature request as part of a pull request. Of course, if you want
+to receive feedback on how to implement a bug-fix or feature before submitting
+a solution, then it would be appropriate to open an issue first and ask your
+questions there.
+
+Having your issue closed does not necessarily mean the end of a discussion. If
+you believe your issue has been closed incorrectly, explain why and we'll
+consider if it needs to be reopened.
 
 ## Pull Requests
 
@@ -85,7 +92,7 @@ included when referencing that issue.
 
 Before being accepted, each pull request must include the applicable code, new
 tests of all new features, updated tests for any changed features, documentation
-updates, and an appropriate update to the release notes. All changes must follow
+updates, and an appropriate update to the changelog. All changes must follow
 the applicable style guides. Failure to meet any one of the requirements is
 likely to delay any serious consideration of your pull request and may even
 cause it to be closed. Of course, if you are in the early stages of development,
@@ -98,6 +105,12 @@ request. After making a pull request, check the build status in the
 GitHub interface to ensure that all tests are running as expected. If any checks
 fail, you may push additional commits to your branch. GitHub will add those
 commits to the pull request and rerun the checks.
+
+It is generally best not to squash multiple commits and force-push your changes
+to a pull request. Instead, the maintainers would like to be able to follow the
+series of commits along with the discussion about those changes as they
+progress over time. If your pull request is accepted, it will be squashed at
+that time if deemed appropriate.
 
 ## Style Guides
 
@@ -224,6 +237,32 @@ Python-Markdown's [Admonition Extension]:
     This is the content of the note.
 ```
 
+#### Changelog
+
+Any commit/pull request which changes the behavior of the Markdown library in
+any way must include an entry in the changelog. If a change only alters the
+documentation or tooling for the project, then an entry in the changelog is
+not necessary. The current changelog can be found at `docs/changelog.md`.
+
+The current changelog follows the format defined at
+[keepachangelog.com](https://keepachangelog.com/en/1.1.0/). The description of
+each change should include a reference to the relevant GitHub issue in the
+format `#123` (where `123` is the issue number).
+
+Edits to the changelog should generally add entries to the `[unreleased]`
+version at the top of the log. A pull request should not alter an entry for a
+previously released version, unless it is editing an error in the notes for
+that version, or is otherwise expressly deemed appropriate by the project
+maintainers.
+
+The current changelog should only document the changes for one MAJOR release and
+its various MINOR and PATCH releases (see [Versions](#versions) for an
+explanation of MAJOR, MINOR, and PATCH releases). Older versions from previous
+series of releases can be found in the archive at `docs/change_log/` and may
+follow a different format. Note that the archived changelogs are not in the site
+navigation and are only linked from the [Previous
+Releases](changelog.md#previous-releases) section of the current changelog.
+
 ### Commit Message Style Guide
 
 Use the present tense ("Add feature" not "Added feature").
@@ -234,7 +273,7 @@ Limit the first line to 72 characters or less.
 
 Reference issues and pull requests liberally after the first line. Include a
 summary of the changes/additions made without replicating the content of the
-documentation or release notes. This is where an explanation of the choices made
+documentation or changelog. This is where an explanation of the choices made
 should be found. References to issues and pull requests should only provide the
 context in which a choice was made. However, the commit should be able to stand
 on its own.
@@ -280,7 +319,7 @@ working copy into the environment in [Development Mode] after activating the
 virtual environment for the first time:
 
 ```sh
-pip install --editable .
+pip install -e .
 ```
 
 Now any saved changes will immediately be available within the virtual
@@ -292,10 +331,44 @@ You can run the command line script with the following command:
 python -m markdown
 ```
 
+Before building the documentation for the first time, you will need to install
+some optional dependencies with the command:
+
+```sh
+pip install -e .[docs]
+```
+
+To build the documentation and serve it locally on a development server, run:
+
+```sh
+mkdocs serve
+```
+
+Then point your browser at `http://127.0.0.1:8000/`. For a complete list of
+options available, view MkDocs' help with the command:
+
+```sh
+mkdocs --help
+```
+
+Before running tests for the first time, you will need to install some optional
+dependencies with the command:
+
+```sh
+pip install -e .[testing]
+```
+
 And you can directly run the tests with:
 
 ```sh
 python -m unittest discover tests
+```
+
+To get a coverage report after running the tests, use these commands instead:
+
+```sh
+coverage run --source=markdown -m unittest discover tests
+coverage report --show-missing
 ```
 
 !!! note
@@ -304,17 +377,17 @@ python -m unittest discover tests
     library. If you do not have PyTidyLib installed, the tests which depend upon
     it will be skipped. Given the difficulty in installing the HTML Tidy library
     on many systems, you may choose to leave both libraries uninstalled and
-    depend on the Travis server to run those tests when you submit a pull
-    request.
+    depend on the continuous integration server to run those tests when you
+    submit a pull request.
 
 The above setup will only run tests against the code in one version of Python.
 However,  Python-Markdown supports multiple versions of Python. Therefore, a
 [tox] configuration is included in the repository, which includes test
 environments for all supported Python versions, a [Flake8] test environment, and
 a spellchecker for the documentation. While it is generally fine to leave those
-tests for the Travis server to run when a pull request is submitted, for more
-advanced changes, you may want to run those tests locally. To do so, simply
-install tox:
+tests for the continuous integration server to run when a pull request is
+submitted, for more advanced changes, you may want to run those tests locally.
+To do so, simply install tox:
 
 ```sh
 pip install tox
@@ -337,7 +410,7 @@ with no arguments. See help (`tox -h`) for more options.
 
 !!! seealso "See Also"
 
-    Python-Markdown provides [test tools] which simply testing Markdown syntax.
+    Python-Markdown provides [test tools] which simply test Markdown syntax.
     Understanding those tools will often help in understanding why a test may be
     failing.
 
@@ -348,8 +421,9 @@ Python-Markdown follows [Semantic Versioning] and uses the
 of the `master` branch should always be identified in the `__version_info__`
 tuple defined in [`markdown/__meta__.py`][markdown/__meta__.py]. The contents of
 that tuple will automatically be converted into a normalized version which
-conforms to [PEP 440]. An invalid `__version_info__` tuple will raise an error,
-preventing the library from running and the package from building.
+conforms to [PEP 440]. Each time the version is changed, the continuous
+integration server will run a test to ensure that the current version is in a
+valid normalized format.
 
 ### Version Status
 
@@ -395,8 +469,8 @@ following steps:
 1. Verify that all outstanding issues and pull requests related to the release
    have been resolved.
 
-2. Confirm that the release notes and change log have been updated and indicate
-   the date of the new release.
+2. Confirm that the changelog has been updated and indicate the date and
+   version of the new release.
 
 3. Update the version defined in [`markdown/__meta__.py`][markdown/__meta__.py].
 
@@ -508,7 +582,7 @@ label from the same group.
 [tox]: https://tox.readthedocs.io/en/latest/
 [aspell]: http://aspell.net/
 [test tools]: test_tools.md
-[Semantic Versioning]: https://semver.org/
+[Semantic Versioning]: https://semver.org/spec/v2.0.0.html
 [markdown/__meta__.py]: https://github.com/Python-Markdown/markdown/blob/master/markdown/__meta__.py#L29
 [PEP 440]: https://www.python.org/dev/peps/pep-0440/
 [PyPI]: https://pypi.org/project/Markdown/

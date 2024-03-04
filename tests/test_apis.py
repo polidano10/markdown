@@ -12,7 +12,7 @@ Maintained for a few years by Yuri Takhteyev (http://www.freewisdom.org).
 Currently maintained by Waylan Limberg (https://github.com/waylan),
 Dmitry Shachnev (https://github.com/mitya57) and Isaac Muse (https://github.com/facelessuser).
 
-Copyright 2007-2018 The Python Markdown Project (v. 1.7 and later)
+Copyright 2007-2023 The Python Markdown Project (v. 1.7 and later)
 Copyright 2004, 2005, 2006 Yuri Takhteyev (v. 0.2-1.6b)
 Copyright 2004 Manfred Stienstra (the original version)
 
@@ -30,10 +30,11 @@ import os
 import markdown
 import warnings
 from markdown.__main__ import parse_options
+from markdown import inlinepatterns
 from logging import DEBUG, WARNING, CRITICAL
 import yaml
 import tempfile
-from io import BytesIO
+from io import BytesIO, StringIO, TextIOWrapper
 import xml.etree.ElementTree as etree
 from xml.etree.ElementTree import ProcessingInstruction
 
@@ -80,8 +81,8 @@ class TestConvertFile(unittest.TestCase):
 
     def setUp(self):
         self.saved = sys.stdin, sys.stdout
-        sys.stdin = BytesIO(bytes('foo', encoding='utf-8'))
-        sys.stdout = BytesIO()
+        sys.stdin = StringIO('foo')
+        sys.stdout = TextIOWrapper(BytesIO())
 
     def tearDown(self):
         sys.stdin, sys.stdout = self.saved
@@ -111,7 +112,7 @@ class TestConvertFile(unittest.TestCase):
     def testStdinStdout(self):
         markdown.markdownFromFile()
         sys.stdout.seek(0)
-        self.assertEqual(sys.stdout.read().decode('utf-8'), '<p>foo</p>')
+        self.assertEqual(sys.stdout.read(), '<p>foo</p>')
 
 
 class TestBlockParser(unittest.TestCase):
@@ -664,8 +665,8 @@ class testAtomicString(unittest.TestCase):
     """ Test that `AtomicStrings` are honored (not parsed). """
 
     def setUp(self):
-        md = markdown.Markdown()
-        self.inlineprocessor = md.treeprocessors['inline']
+        self.md = markdown.Markdown()
+        self.inlineprocessor = self.md.treeprocessors['inline']
 
     def testString(self):
         """ Test that a regular string is parsed. """
@@ -709,6 +710,26 @@ class testAtomicString(unittest.TestCase):
             '<div><p>*some* <span>*more* <span>*text* <span>*here*</span> '
             '*to*</span> *test*</span> *with*</p></div>'
         )
+
+    def testInlineProcessorDoesntCrashWithWrongAtomicString(self):
+        """ Test that an `AtomicString` returned from a Pattern doesn't cause a crash. """
+        tree = etree.Element('div')
+        p = etree.SubElement(tree, 'p')
+        p.text = 'a marker c'
+        self.md.inlinePatterns.register(
+            _InlineProcessorThatReturnsAtomicString(r'marker', self.md), 'test', 100
+        )
+        new = self.inlineprocessor.run(tree)
+        self.assertEqual(
+            markdown.serializers.to_html_string(new),
+            '<div><p>a &lt;b&gt;atomic&lt;/b&gt; c</p></div>'
+        )
+
+
+class _InlineProcessorThatReturnsAtomicString(inlinepatterns.InlineProcessor):
+    """ Return a simple text of `group(1)` of a Pattern. """
+    def handleMatch(self, m, data):
+        return markdown.util.AtomicString('<b>atomic</b>'), m.start(0), m.end(0)
 
 
 class TestConfigParsing(unittest.TestCase):
