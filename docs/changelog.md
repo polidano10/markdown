@@ -8,13 +8,80 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See the [Contributing Guide](contributing.md) for details.
 
-## [unreleased]
+## [Unreleased]
+
+### Changed
+
+* DRY fix in `abbr` extension by introducing method `create_element` (#1483).
+
+## [3.7] -- 2024-08-16
+
+### Changed
+
+#### Refactor `abbr` Extension
+
+A new `AbbrTreeprocessor` has been introduced, which replaces the now deprecated
+`AbbrInlineProcessor`. Abbreviation processing now happens after Attribute Lists,
+avoiding a conflict between the two extensions (#1460).
+
+The `AbbrPreprocessor` class has been renamed to `AbbrBlockprocessor`, which
+better reflects what it is. `AbbrPreprocessor` has been deprecated.
+
+A call to `Markdown.reset()` now clears all previously defined abbreviations.
+
+Abbreviations are now sorted by length before executing `AbbrTreeprocessor`
+to ensure that multi-word abbreviations are implemented even if an abbreviation
+exists for one of those component words. (#1465)
+
+Abbreviations without a definition are now ignored. This avoids applying
+abbr tags to text without a title value.
+
+Added an optional `glossary` configuration option to the abbreviations extension.
+This provides a simple and efficient way to apply a dictionary of abbreviations
+to every page.
+
+Abbreviations can now be disabled by setting their definition to `""` or `''`.
+This can be useful when using the `glossary` option.
+
+
+### Fixed
+
+* Fixed links to source code on GitHub from the documentation (#1453).
+
+## [3.6] -- 2024-03-14
+
+### Changed
+
+#### Refactor TOC Sanitation
+
+* All postprocessors are now run on heading content.
+* Footnote references are now stripped from heading content. Fixes #660.
+* A more robust `striptags` is provided to convert headings to plain text.
+  Unlike, the `markupsafe` implementation, HTML entities are not unescaped.
+* The plain text `name`, rich `html`, and unescaped raw `data-toc-label` are
+  saved to `toc_tokens`, allowing users to access the full rich text content of
+  the headings directly from `toc_tokens`.
+* The value of `data-toc-label` is sanitized separate from heading content
+  before being written to `name`. This fixes a bug which allowed markup through
+  in certain circumstances. To access the raw unsanitized data, retrieve the
+  value from `token['data-toc-label']` directly.
+* An `html.unescape` call is made just prior to calling `slugify` so that
+  `slugify` only operates on Unicode characters. Note that `html.unescape` is
+  not run on `name`, `html`, or `data-toc-label`.
+* The functions `get_name` and `stashedHTML2text` defined in the `toc` extension
+  are both **deprecated**. Instead, third party extensions should use some
+  combination of the new functions `run_postprocessors`, `render_inner_html` and
+  `striptags`.
 
 ### Fixed
 
 * Include `scripts/*.py` in the generated source tarballs (#1430).
 * Ensure lines after heading in loose list are properly detabbed (#1443).
 * Give smarty tree processor higher priority than toc (#1440).
+* Permit carets (`^`) and square brackets (`]`) but explicitly exclude
+  backslashes (`\`) from abbreviations (#1444).
+* In attribute lists (`attr_list`, `fenced_code`), quoted attribute values are
+  now allowed to contain curly braces (`}`) (#1414).
 
 ## [3.5.2] -- 2024-01-10
 
