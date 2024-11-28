@@ -440,7 +440,7 @@ class TestAbbr(TestCase):
             ),
             self.dedent(
                 """
-                <p><img alt="Image with abbr in title" src="abbr.png" title="Image with abbr in title" /></p>
+                <p><img alt="Image with abbr in title" loading="lazy" src="abbr.png" title="Image with abbr in title" /></p>
                 """
             ),
             extensions=['abbr', 'attr_list']
