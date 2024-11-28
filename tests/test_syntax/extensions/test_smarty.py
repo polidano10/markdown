@@ -113,7 +113,7 @@ class TestSmarty(TestCase):
     def test_escaped_attr(self):
         self.assertMarkdownRenders(
             '![x\"x](x)',
-            '<p><img alt="x&quot;x" src="x" /></p>'
+            '<p><img alt="x&quot;x" loading="lazy" src="x" /></p>'
         )
 
     def test_code_spans(self):
