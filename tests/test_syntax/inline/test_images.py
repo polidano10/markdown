@@ -76,7 +76,7 @@ class TestAdvancedImages(TestCase):
     def test_mixed_title_quotes2(self):
         self.assertMarkdownRenders(
             """![Text](http://link.com/".png'title') more text""",
-            """<p><img alt="Text" loading="lazy" src="http://link.com/&quot;.png" title="title" /> """
+            """<p><img alt="Text" src="http://link.com/&quot;.png" title="title" /> """
             """more text</p>"""
         )
 
