@@ -23,7 +23,6 @@ from markdown.test_tools import TestCase
 
 
 class TestAdvancedImages(TestCase):
-
     def test_nested_square_brackets(self):
         self.assertMarkdownRenders(
             """![Text[[[[[[[]]]]]]][]](http://link.com/image.png) more text""",
