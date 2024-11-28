@@ -61,7 +61,7 @@ class TestLegacyAtrributes(TestCase):
                 <p id="TABLEOFCONTENTS">Or in the middle of the text </p>
                 <p id="tableofcontents"></p>
                 <p><a href="http://fourthought.com/"><img alt="" loading="lazy" src="http://fourthought.com/images/ftlogo.png" style="float: left; margin: 10px; border: none;" title="Fourthought logo" /></a></p>
-                <p><img alt="img" loading="lazy" id="foo" src="http://example.com/i.jpg" /></p>
+                <p><img alt="img" id="foo" loading="lazy" src="http://example.com/i.jpg" /></p>
             """),  # noqa: E501
             extensions=['legacy_attrs']
         )
