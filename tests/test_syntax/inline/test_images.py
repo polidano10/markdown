@@ -34,7 +34,8 @@ class TestAdvancedImages(TestCase):
     def test_nested_round_brackets(self):
         self.assertMarkdownRenders(
             """![Text](http://link.com/(((((((()))))))()).png) more text""",
-            """<p><img alt="Text" src="http://link.com/(((((((()))))))()).png" /> more text</p>"""
+            """<p><img alt="Text" loading="lazy" src="http://link.com/(((((((()))))))()).png" /> """
+            """more text</p>"""
         )
 
     def test_uneven_brackets_with_titles1(self):
