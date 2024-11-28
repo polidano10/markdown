@@ -76,39 +76,39 @@ class TestAdvancedImages(TestCase):
     def test_mixed_title_quotes2(self):
         self.assertMarkdownRenders(
             """![Text](http://link.com/".png'title') more text""",
-            """<p><img alt="Text" loading="lazy" src="http://link.com/&quot;.png" title="title" /> 
-            more text</p>"""
+            """<p><img alt="Text" loading="lazy" src="http://link.com/&quot;.png" title="title" />
+             more text</p>"""
         )
 
     def test_mixed_title_quotes3(self):
         self.assertMarkdownRenders(
             """![Text](http://link.com/with spaces.png'"and quotes" 'and title') more text""",
-            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces.png" 
-            title="&quot;and quotes&quot; 'and title" />"""
+            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces.png"
+             title="&quot;and quotes&quot; 'and title" />"""
             """ more text</p>"""
         )
 
     def test_mixed_title_quotes4(self):
         self.assertMarkdownRenders(
             """![Text](http://link.com/with spaces'.png"and quotes" 'and title") more text""",
-            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces'.png" 
-            title="and quotes&quot; 'and title" />"""
+            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces'.png"
+             title="and quotes&quot; 'and title" />"""
             """ more text</p>"""
         )
 
     def test_mixed_title_quotes5(self):
         self.assertMarkdownRenders(
             """![Text](http://link.com/with spaces .png'"and quotes" 'and title') more text""",
-            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces .png" 
-            title="&quot;and quotes&quot;"""
+            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces .png"
+             title="&quot;and quotes&quot;"""
             """ 'and title" /> more text</p>"""
         )
 
     def test_mixed_title_quotes6(self):
         self.assertMarkdownRenders(
             """![Text](http://link.com/with spaces "and quotes".png 'and title') more text""",
-            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces &quot;and quotes&quot;.png" 
-            title="and title" />"""
+            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces &quot;and quotes&quot;.png"
+             title="and title" />"""
             """ more text</p>"""
         )
 
@@ -121,16 +121,16 @@ class TestAdvancedImages(TestCase):
     def test_angle_with_mixed_title_quotes(self):
         self.assertMarkdownRenders(
             """![Text](<http://link.com/with spaces '"and quotes".png> 'and title') more text""",
-            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces '&quot;and quotes&quot;.png" 
-            title="and title" />"""
+            """<p><img alt="Text" loading="lazy" src="http://link.com/with spaces '&quot;and quotes&quot;.png"
+             title="and title" />"""
             """ more text</p>"""
         )
 
     def test_misc(self):
         self.assertMarkdownRenders(
             """![Poster](http://humane_man.jpg "The most humane man.")""",
-            """<p><img alt="Poster" loading="lazy" src="http://humane_man.jpg" 
-            title="The most humane man." /></p>"""
+            """<p><img alt="Poster" loading="lazy" src="http://humane_man.jpg"
+             title="The most humane man." /></p>"""
         )
 
     def test_misc_ref(self):
@@ -158,8 +158,8 @@ class TestAdvancedImages(TestCase):
     def test_misc_img_title(self):
         self.assertMarkdownRenders(
             """![Image](http://humane man.jpg "The most humane man.")""",
-            """<p><img alt="Image" loading="lazy" src="http://humane man.jpg" 
-            title="The most humane man." /></p>"""
+            """<p><img alt="Image" loading="lazy" src="http://humane man.jpg"
+             title="The most humane man." /></p>"""
         )
 
     def test_misc_img(self):
